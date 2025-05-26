@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Alutsista</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto mt-10 p-5">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800">Welcome to the Alutsista Management System</h1>
+        </header>
+
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">User Profile</h2>
+            <div id="user-profile" class="space-y-2">
+                <p><strong>Name:</strong> <span id="profile-name">Loading...</span></p>
+                <p><strong>Email:</strong> <span id="profile-email">Loading...</span></p>
+                <p><strong>Position:</strong> <span id="profile-jabatan">Loading...</span></p>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <a href="manufaktur.html"
+                class="block bg-blue-500 hover:bg-blue-600 text-white p-6 rounded-lg shadow-md transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Manage Manufaktur</h3>
+                <p class="text-sm">View, add, edit, and delete manufaktur data.</p>
+            </a>
+            <a href="munisi.html"
+                class="block bg-green-500 hover:bg-green-600 text-white p-6 rounded-lg shadow-md transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Manage Munisi</h3>
+                <p class="text-sm">View, add, edit, and delete aircraft munitions data.</p>
+            </a>
+            <a href="pesawat.html"
+                class="block bg-indigo-500 hover:bg-indigo-600 text-white p-6 rounded-lg shadow-md transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Manage Pesawat</h3>
+                <p class="text-sm">View, add, edit, and delete aircraft data.</p>
+            </a>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="components/navbar.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth(); // Redirects to login if not authenticated
+            renderNavbar('dashboard');
+
+            async function fetchProfile() {
+                try {
+                    const data = await apiRequest('/auth/profile', 'GET'); //
+                    if (data && data.id_user) {
+                        document.getElementById('profile-name').textContent = data.nama_user;
+                        document.getElementById('profile-email').textContent = data.email;
+                        document.getElementById('profile-jabatan').textContent = data.jabatan || 'N/A';
+                    } else {
+                        displayMessage(data.message || 'Could not fetch profile.', 'error', 'global-message');
+                    }
+                } catch (error) {
+                    // displayMessage is called in apiRequest
+                    // console.error('Failed to fetch profile:', error); // Already logged by apiRequest
+                }
+            }
+            fetchProfile();
+        });
+    </script>
+</body>
+
+</html>
