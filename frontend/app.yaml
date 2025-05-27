@@ -1,0 +1,52 @@
+# tugas_akhir_tcc_alusista_negara/frontend/app.yaml
+runtime: static
+# Alternatively, for more control if you need a simple server for routing,
+# you could use a Node.js runtime, but 'static' is simplest for pure static files.
+# runtime: nodejs18 # if you had a server.js to serve static files
+
+handlers:
+  # Serve all static files from the root directory.
+  - url: /
+    static_files: index.html
+    upload: index.html
+
+  - url: /dashboard.html
+    static_files: dashboard.html
+    upload: dashboard.html
+
+  - url: /manufaktur.html
+    static_files: manufaktur.html
+    upload: manufaktur.html
+
+  - url: /munisi.html
+    static_files: munisi.html
+    upload: munisi.html
+
+  - url: /pesawat.html
+    static_files: pesawat.html
+    upload: pesawat.html
+
+  # Serve files from the components directory
+  - url: /components
+    static_dir: components
+
+  # Serve files from the css directory
+  - url: /css
+    static_dir: css
+
+  # Serve files from the js directory
+  - url: /js
+    static_dir: js
+
+  # Optional: if you have images directly in frontend (not for user uploads)
+  # - url: /images
+  #  static_dir: images
+
+# Optional: Error handlers
+# error_handlers:
+#   - file: default_error.html
+
+# Optional: Automatic scaling for static runtime is handled by App Engine
+# automatic_scaling:
+#   min_instances: 0
+#   max_instances: 1 # Adjust as needed for static site, can be low

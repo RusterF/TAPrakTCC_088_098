@@ -80,8 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data && data.length > 0) {
         data.forEach((item) => {
           const row = pesawatTableBody.insertRow();
-          const API_URL_FOR_IMAGES = "http://localhost:5000"; // Adjust if your API serves from a different base
-          const gambarSrc = item.gambar_url ? (item.gambar_url.startsWith('http') ? item.gambar_url : `${API_URL_FOR_IMAGES}${item.gambar_url}`) : '';
+          const gambarSrc = item.gambar_url || ''; // Use directly if backend sends full URL
           const gambarCellHTML = gambarSrc
             ? `<img src="${gambarSrc}" alt="${item.nama_pesawat}" class="h-16 w-auto object-cover">`
             : "N/A";
@@ -136,16 +135,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // gambarUrlTextInput.value = pesawatItem.gambar_url || ""; // Set if it's a URL from DB
       // For editing, show current image if available
       if (pesawatItem.gambar_url) {
-        const API_URL_FOR_IMAGES = "http://localhost:5000";
-        const imgSrc = pesawatItem.gambar_url.startsWith('http') ? pesawatItem.gambar_url : `${API_URL_FOR_IMAGES}${pesawatItem.gambar_url}`;
+        const imgSrc = pesawatItem.gambar_url; // Use directly
         currentImagePreview.src = imgSrc;
         currentImagePreview.classList.remove("hidden");
         currentImageUrlText.textContent = `Current: ${pesawatItem.gambar_url}`;
-        // If the stored URL is not a file upload path, put it in the text field
-        if (!pesawatItem.gambar_url.startsWith('/uploads/pesawat/')) {
-            gambarUrlTextInput.value = pesawatItem.gambar_url;
+        if (!pesawatItem.gambar_url.startsWith(`https://storage.googleapis.com/${images_pesawat}/`)) {
+            gambarUrlTextInput.value = pesawatItem.gambar_url; // If it's an old manual URL
         } else {
-            gambarUrlTextInput.value = ''; // Clear text URL if it was an upload
+            gambarUrlTextInput.value = '';
         }
       } else {
         gambarUrlTextInput.value = '';
