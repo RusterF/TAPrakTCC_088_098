@@ -71,9 +71,13 @@ steps:
       ]
     id: 'Deploy Frontend to App Engine'
 
+# Define the images to be built and pushed
 images:
   - 'gcr.io/$PROJECT_ID/alusista-backend:$COMMIT_SHA'
   - 'gcr.io/$PROJECT_ID/alusista-backend:latest'
+
+options:
+  defaultLogsBucketBehavior: 'REGIONAL_USER_OWNED_BUCKET'
 
 # Optional: Timeout for the build
 timeout: '1200s' # 20 minutes
