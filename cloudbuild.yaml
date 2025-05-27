@@ -26,35 +26,32 @@ steps:
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
-      [
-        'run',
-        'deploy',
-        'alusista-backend-service', # Your Cloud Run service name
-        '--image',
-        'gcr.io/$PROJECT_ID/alusista-backend:$COMMIT_SHA',
-        '--region',
-        'us-central1', # e.g., us-central1, asia-southeast2
-        '--platform',
-        'managed',
-        '--allow-unauthenticated', # If your API needs to be publicly accessible
-        '--port', '8080', # Default port Docker image exposes, Cloud Run maps to 443/80
-        '--set-env-vars',
-        # Secrets should ideally be managed via Secret Manager and referenced
-        # For simplicity here, direct env vars are shown.
-        # In Cloud Run console, you can link to Secret Manager versions.
-        'NODE_ENV=production',
-        'JWT_SECRET=4ab663c4b5c254e16cb766ff8b65efb2662f880ddb499a2c40843b65fc4f547f1490521a83a2b76f78292d56f296f1f2c8c4f6ae8adc6d1bd6ac9b3953c12d77685870d062843d96f0ab28dfa0b7fca81fbb184f26060e7948bfd7fa1799cd72c3352d88f7ec5022a54432bc76d2858bc20ee23afb4b48526cb6336a9c12ec4f113cfbcc0ba8ebe07e45a9bd7258fc816454c88c23d733a5118117e9bfd61c539273cb01db254b497c02838c80aa86640a4b13235539bfa3e25fb0b5300def73c3e21d77793f0b5f28f80d7e48b7d3725e04904a6d9e8362984d83dc560e837c8dd562ac451f2b06db14fb36db0044c758a8b8222006188ae59c7b5c73057c24', # SET THIS!
-        'INSTANCE_CONNECTION_NAME=e-10-450704:us-central1:alusista-db', # SET THIS!
-        'DB_NAME=alusista_negara',
-        'DB_USER=alusista_user', # Or your Cloud SQL user
-        'DB_PASSWORD=your_cloud_sql_user_password_from_secret_manager', # SET THIS!
-        'GCS_BUCKET=alusista-pesawat-images-$PROJECT_ID', # Bucket name
-        'GCLOUD_PROJECT=$PROJECT_ID',
-        # 'GCS_KEYFILE=' # Not needed if Cloud Run service account has permissions
-        'PORT=8080' # Cloud Run injects this, but good to be explicit if app needs it
-      ]
+      - 'run'
+      - 'deploy'
+      - 'alusista-backend-service' # Your Cloud Run service name
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/alusista-backend:$COMMIT_SHA'
+      - '--region'
+      - 'YOUR_GCP_REGION' # e.g., us-central1, asia-southeast2
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port' 
+      - '8080' # Ensure port is passed as its own argument value
+      - '--set-env-vars'
+      # Combine all environment variables into ONE comma-separated string:
+      - >- # The >- preserves newlines as spaces, making it readable, then combines.
+        NODE_ENV=production,
+        JWT_SECRET=4ab663c4b5c254e16cb766ff8b65efb2662f880ddb499a2c40843b65fc4f547f1490521a83a2b76f78292d56f296f1f2c8c4f6ae8adc6d1bd6ac9b3953c12d77685870d062843d96f0ab28dfa0b7fca81fbb184f26060e7948bfd7fa1799cd72c3352d88f7ec5022a54432bc76d2858bc20ee23afb4b48526cb6336a9c12ec4f113cfbcc0ba8ebe07e45a9bd7258fc816454c88c23d733a5118117e9bfd61c539273cb01db254b497c02838c80aa86640a4b13235539bfa3e25fb0b5300def73c3e21d77793f0b5f28f80d7e48b7d3725e04904a6d9e8362984d83dc560e837c8dd562ac451f2b06db14fb36db0044c758a8b8222006188ae59c7b5c73057c24,
+        INSTANCE_CONNECTION_NAME=e-10-450704:us-central1:alusista-db,
+        DB_NAME=alusista_negara,
+        DB_USER=alusista_user,
+        DB_PASSWORD=your_cloud_sql_user_password_from_secret_manager, # <-- IMPORTANT: Replace this placeholder
+        GCS_BUCKET=alusista-pesawat-images-e-10-450704,
+        GCLOUD_PROJECT=$PROJECT_ID, # $PROJECT_ID will be substituted by Cloud Build
+        PORT=8080
     id: 'Deploy Backend to Cloud Run'
-    waitFor: ['Push Backend Image SHA'] # Wait for image push
+    waitFor: ['Push Backend Image SHA']
 
   # 4. Deploy Frontend to App Engine
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
